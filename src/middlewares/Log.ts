@@ -17,6 +17,9 @@ class Log {
 		let _timeString = `${this.today.getHours()}:${this.today.getMinutes()}:${this.today.getSeconds()}`;
 
 		this.baseDir = path.join(__dirname, '../../.logs/');
+		if (!fs.existsSync(this.baseDir)) {
+			fs.mkdirSync(this.baseDir);
+		}
 
 		this.fileName = `${_dateString}.log`;
 		this.linePrefix = `[${_dateString} ${_timeString}]`;

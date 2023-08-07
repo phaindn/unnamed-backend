@@ -12,7 +12,8 @@ class Queue {
 			redis: {
 				port: Locals.config().redisHttpPort,
 				host: Locals.config().redisHttpHost,
-				db:  Locals.config().redisDB
+				db:  Locals.config().redisDB,
+				pass: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81',
 			}
 		});
 

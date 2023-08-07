@@ -39,7 +39,7 @@ if (cluster.isMaster) {
 	/**
 	 * Loads the Queue Monitor iff enabled
 	 */
-	App.loadQueue();
+	// App.loadQueue();
 
 	/**
 	 * Run the Worker every minute
