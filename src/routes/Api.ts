@@ -3,11 +3,11 @@ import * as expressJwt from 'express-jwt';
 
 import Locals from '../providers/Locals';
 
-import HomeController from '../controllers/Api/Home';
+import V1 from '../controllers/v1'
 
 
 const router = Router();
 
-router.get('/', HomeController.index);
+router.get('/v1/', V1.index);
 
 export default router;

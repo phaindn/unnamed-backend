@@ -111,13 +111,7 @@ class User implements IUser {
 	geolocation: string;
 	website: string;
 	picture: string;
-	
-	findOne
-	findById(id: any): Promise<any> {
-		return new Promise(resolve => {
-			resolve({});
-		})
-	}
+
 }
 
 export default User;
