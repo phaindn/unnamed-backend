@@ -1,9 +1,4 @@
-```
-Hey There! 🙌 
-🤾 that ⭐️ button if you like this boilerplate. 
-```
-
-<img alt="express-typescript" src="https://geekyants.github.io/express-typescript/public/images/express-typescript.png" height="50%" width="60%">
+# README
 
 A boilerplate for [Node.js](https://nodejs.org/en) App.
 
@@ -24,98 +19,15 @@ A boilerplate for [Node.js](https://nodejs.org/en) App.
 # Contents
 
 * [Global Requisites](#global-requisites)
-* [App Structure](#app-structure)
 * [Install, Configure & Run](#install-configure--run)
-* [List of Routes](#list-of-routes)
-* [Screens](#screens)
 
 # Global Requisites
 
 * node (>= 10.5.0)
 * tsc (>= 3.0.1)
 * typescript (>= 3.0.1)
-* mongoose (>= 3.6.2)
+* pg (>= 8.11.2)
 * redis
-
-# App Structure
-
-> _Note: I am mentioning only files/folders which you need to configure if required_
-
-```bash
-├── dist
-├── public
-├── src
-│   ├── controllers
-│   │   ├── Api
-│   │   │   ├── Auth
-│   │   │   │   ├── Login.ts
-│   │   │   │   ├── RefreshToken.ts
-│   │   │   │   └── Register.ts
-│   │   │   └── Home.ts
-│   │   ├── Auth
-│   │   │   ├── Login.ts
-│   │   │   ├── Logout.ts
-│   │   │   ├── Register.ts
-│   │   │   └── Social.ts
-│   │   ├── Account.ts
-│   │   └── Home.ts
-│   ├── exception
-│   │   ├── Handler.ts
-│   │   └── NativeEvent.ts
-│   ├── interfaces
-│   │   ├── models
-│   │   │   └── user.ts
-│   │   └── vendors
-│   │        ├── index.ts
-│   │        ├── INext.ts
-│   │        ├── IRequest.ts
-│   │        └── IResponse.ts
-│   ├── middlewares
-│   │   ├── CORS.ts
-│   │   ├── CsrfToken.ts
-│   │   ├── Http.ts
-│   │   ├── Kernel.ts
-│   │   ├── Log.ts
-│   │   ├── Statics.ts
-│   │   ├── StatusMonitor.ts
-│   │   └── View.ts
-│   ├── models
-│   │   └── User.ts
-│   ├── providers
-│   │   ├── App.ts
-│   │   ├── Cache.ts
-│   │   ├── Database.ts
-│   │   ├── Express.ts
-│   │   ├── Locals.ts
-│   │   ├── Passport.ts
-│   │   ├── Queue.ts
-│   │   └── Routes.ts
-│   ├── routes
-│   │   ├── Api.ts
-│   │   └── Web.ts
-│   ├── services
-│   │   └── strategies
-│   │        ├── Google.ts
-│   │        ├── Local.ts
-│   │        └── Twitter.ts
-│   └── index.ts
-├── views
-│   ├── includes
-│   ├── modals
-│   ├── pages
-│   ├── partials
-│   ├── static
-│   │   ├── css/*.css
-│   │   └── js/*.js
-│   └── layout.pug
-├── .env
-├── .gitignore
-├── nodemon.json
-├── package.json
-├── README.md
-├── tsconfig.json
-└── tslint.json
-```
 
 # Install, Configure & Run
 
@@ -159,73 +71,3 @@ docker-compose up
 # Run the app in docker as a background process
 docker-compose up -d
 ```
-
-
-# List of Routes
-
-```sh
-# Web Routes:
-
-+--------+-------------------------+
-  Method | URI
-+--------+-------------------------+
-  GET    | /
-  GET    | /signup
-  POST   | /signup
-  GET    | /login
-  POST   | /login
-  GET    | /logout
-  GET    | /account
-  GET    | /auth/google
-  GET    | /auth/google/callback
-  GET    | /auth/twitter
-  GET    | /auth/twitter/callback
-  GET    | /status-monitor
-+--------+-------------------------+
-
-# API Routes:
-
-+--------+-------------------------+
-  Method | URI
-+--------+-------------------------+
-  POST   | /api
-  POST   | /api/auth/login
-  POST   | /api/auth/register
-  POST   | /api/auth/refresh-token
-+--------+-------------------------+
-```
-
-# Screens
-
-### Home / Landing Page
-
-![Home / Landing Page](/screens/Home.png)
-> Note: This page has sub-sections, like about-us, contact-us & portfolio
-
-### LogIn Page
-
-![LogIn Page](/screens/Login.png)
-> Note: LogIn with Providers
-
-### SignUp Page
-
-![SignUp Page](/screens/SignUp.png)
-> Note: SignUp with Providers
-
-### Dashboard Page
-
-![Dashboard Page](/screens/Dashboard.png)
-
-### With Dropdown Menu
-
-![Dashboard Page with Dropdown Menu](/screens/DashboardWithDropdown.png)
-
-### Page Not Found Page
-
-![Page Not Found Page](/screens/PageNotFound.png)
-> Note: In case the requested URI does not exist, app shows this page
-
-### Under Maintenance Page
-
-![Under Maintenance Page](/screens/UnderMaintenance.png)
-> Note: In case an error is generated, so instead of plain errors we can show the under maintenance page.

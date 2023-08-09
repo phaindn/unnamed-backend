@@ -2,7 +2,6 @@ import { Application } from 'express';
 
 import CORS from './CORS';
 import Http from './Http';
-import Views from './Views';
 import Statics from './Statics';
 import CsrfToken from './CsrfToken';
 import StatusMonitor from './StatusMonitor';
