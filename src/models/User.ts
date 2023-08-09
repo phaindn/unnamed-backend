@@ -1,99 +1,84 @@
-// import * as crypto from 'crypto';
-// import * as bcrypt from 'bcrypt-nodejs';
-
 import { IUser, Tokens } from '../interfaces/models/user';
-// import mongoose from '../providers/Database';
+import pool from '../providers/Database';
 
-// // Create the model schema & register your custom methods here
-// export interface IUserModel extends IUser, mongoose.Document {
-// 	billingAddress(): string;
-// 	comparePassword(password: string, cb: any): string;
-// 	validPassword(password: string, cb: any): string;
-// 	gravatar(_size: number): string;
-// }
+export class UserModel {
 
-// // Define the User Schema
-// export const UserSchema = new mongoose.Schema<IUserModel>({
-// 	email: { type: String, unique: true },
-// 	password: { type: String },
-// 	passwordResetToken: { type: String },
-// 	passwordResetExpires: Date,
+	public static insert(user: Omit<IUser, 'id'>) {
+		return new Promise<IUser>((resolve, reject) => {
+			user.created_at = Date.now();
+			user.updated_at = user.created_at;
+			const params = [user.email, user.fullname, user.password, user.created_at, user.updated_at]
+			pool.query<IUser>('INSERT INTO users(email, fullname, password, created_at, updated_at) VALUES($1, $2, $3, $4, $5)', params, (error, results) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				resolve(results.rows[0]);
+			})
+		})
+	}
 
-// 	facebook: { type: String },
-// 	twitter: { type: String },
-// 	google: { type: String },
-// 	github: { type: String },
-// 	instagram: { type: String },
-// 	linkedin: { type: String },
-// 	steam: { type: String },
-// 	tokens: Array,
+	public static async list(limit: number | 'ALL' = 10, offset: number = 0) {
+		return new Promise<IUser[]>((resolve, reject) => {
+			pool.query<IUser>('SELECT * FROM users WHERE deleted_at IS NULL ORDER BY id ASC LIMIT $1 OFFSET $2', [limit, offset], (error, results) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				resolve(results.rows);
+			})
+		})
+	}
 
-// 	fullname: { type: String },
-// 	gender: { type: String },
-// 	geolocation: { type: String },
-// 	website: { type: String },
-// 	picture: { type: String }
-// }, {
-// 	timestamps: true
-// });
+	public static async findById<IUser>(id: number) {
+		return new Promise((resolve, reject) => {
+			pool.query<IUser>('SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL', [id], (error, results) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				resolve(results.rows[0]);
+			})
+		})
+	}
 
-// // Password hash middleware
-// UserSchema.pre<IUserModel>('save', function (_next) {
-// 	const user = this;
-// 	if (!user.isModified('password')) {
-// 		return _next();
-// 	}
+	public static update(user: Partial<IUser>) {
+		return new Promise<IUser>((resolve, reject) => {
+			user.updated_at = Date.now();
+			const entries = Object.entries(user);
+			const fields = entries.map(([key], index) => `${key} = $${index + 1}`)
+			const params = entries.map(([, value]) => value)
+			
+			pool.query<IUser>(`UPDATE users SET ${fields.join(', ')} WHERE id = $${entries.length + 1}`, params, (error, results) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				resolve(results.rows[0]);
+			})
+		})
+	}
 
-// 	bcrypt.genSalt(10, (_err, _salt) => {
-// 		if (_err) {
-// 			return _next(_err);
-// 		}
+	public static async delete<IUser>(id: number, hard = false) {
+		if (!hard) {
+			return this.update({ id, deleted_at: Date.now() })
+		}
 
-// 		bcrypt.hash(user.password, _salt, null, (_err, _hash) => {
-// 			if (_err) {
-// 				return _next(_err);
-// 			}
-
-// 			user.password = _hash;
-// 			return _next();
-// 		});
-// 	});
-// });
-
-// // Custom Methods
-// // Get user's full billing address
-// UserSchema.methods.billingAddress = function (): string {
-// 	const fulladdress = `${this.fullname.trim()} ${this.geolocation.trim()}`;
-// 	return fulladdress;
-// };
-
-// // Compares the user's password with the request password
-// UserSchema.methods.comparePassword = function (_requestPassword, _cb): any {
-// 	bcrypt.compare(_requestPassword, this.password, (_err, _isMatch) => {
-// 		return _cb(_err, _isMatch);
-// 	});
-// };
-
-// // User's gravatar
-// UserSchema.methods.gravatar = function (_size): any {
-// 	if (! _size) {
-// 		_size = 200;
-// 	}
-
-// 	const url = 'https://gravatar.com/avatar';
-// 	if (! this.email) {
-// 		return `${url}/?s=${_size}&d=retro`;
-// 	}
-
-// 	const md5 = crypto.createHash('md5').update(this.email).digest('hex');
-// 	return `${url}/${md5}?s=${_size}&d=retro`;
-// };
-
-// const User = mongoose.model<IUserModel>('User', UserSchema);
-
-// export default User;
+		return new Promise((resolve, reject) => {
+			pool.query<IUser>('DELETE FROM users WHERE id = $1', [id], (error, results) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				resolve(results.rows[0]);
+			});
+			return;
+		})
+	}
+}
 
 class User implements IUser {
+	id: number;
 	email: string;
 	password: string;
 	passwordResetToken: string;
@@ -111,7 +96,21 @@ class User implements IUser {
 	geolocation: string;
 	website: string;
 	picture: string;
+	created_at?: number;
+	updated_at?: number;
+	deleted_at?: number;
 
+	save() {
+		if (this.id > 0) {
+			return UserModel.update(this);
+		}
+
+		return UserModel.insert(this);
+	}
+
+	delete(hard = false) {
+		return UserModel.delete(this.id, hard);
+	}
 }
 
 export default User;

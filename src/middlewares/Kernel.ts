@@ -22,9 +22,6 @@ class Kernel {
 		// Mount csrf token verification middleware
 		_express = CsrfToken.mount(_express);
 
-		// Mount view engine middleware
-		_express = Views.mount(_express);
-
 		// Mount statics middleware
 		_express = Statics.mount(_express);
 

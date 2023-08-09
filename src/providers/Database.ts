@@ -1,21 +1,21 @@
-import { Client } from 'pg';
+import { Pool } from 'pg';
 
 import Locals from './Locals';
 import Log from '../middlewares/Log';
 
 export class Database {
 
-	public static client: Client;
+	public static pool: Pool;
 
 	// Initialize your database pool
 	public static init (): any {
 		const config = Locals.config().postgres;
 
-		this.client = new Client(config);
-		this.client.connect().then(() => {
-			Log.info('connected to mongo server at: ' + config);
+		this.pool = new Pool(config);
+		this.pool.connect().then(() => {
+			Log.info('Connected to Postgres at: ' + config);
 		}).catch(error => {
-			Log.info('Failed to connect to the Mongo server!!');
+			Log.info('Failed to connect to the Postgres!!');
 			console.log(error);
 			throw error;
 		});
@@ -24,4 +24,4 @@ export class Database {
 	}
 }
 
-export default Database.client;
+export default Database.pool;
