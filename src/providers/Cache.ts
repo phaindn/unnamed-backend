@@ -5,7 +5,7 @@ class Cache {
 	 * Checks for the available cached data
 	 * or adds if not available
 	 */
-	public cache(_duration: number): any {
+	public cache(duration: number): any {
 		return (req, res, next) => {
 			let key = '__express__' + req.originalUrl || req.url;
 
@@ -15,7 +15,7 @@ class Cache {
 			} else {
 				res.sendResponse = res.send;
 				res.send = (body) => {
-					mcache.put(key, body, _duration * 1000);
+					mcache.put(key, body, duration * 1000);
 					res.sendResponse(body);
 				};
 				next();

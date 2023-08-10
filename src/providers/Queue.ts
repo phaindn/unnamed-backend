@@ -18,35 +18,35 @@ class Queue {
 		});
 
 		this.jobs
-			.on('job enqueue', (_id, _type) => Log.info(`Queue :: #${_id} Processing of type '${_type}'`))
-			.on('job complete', (_id) => this.removeProcessedJob(_id));
+			.on('job enqueue', (id, type) => Log.info(`Queue :: #${id} Processing of type '${type}'`))
+			.on('job complete', (id) => this.removeProcessedJob(id));
 	}
 
-	public dispatch (_jobName: string, _args: object, _callback: Function): void {
-		this.jobs.create(_jobName, _args).save();
+	public dispatch (jobName: string, args: object, callback: Function): void {
+		this.jobs.create(jobName, args).save();
 
-		this.process(_jobName, 3, _callback);
+		this.process(jobName, 3, callback);
 	}
 
-	private removeProcessedJob (_id): void {
-		Log.info(`Queue :: #${_id} Processed`);
+	private removeProcessedJob (id): void {
+		Log.info(`Queue :: #${id} Processed`);
 
-		kue.Job.get(_id, (_err, _job) => {
+		kue.Job.get(id, (_err, _job) => {
 			if (_err) { return; }
 
 			_job.remove((_err) => {
 				if (_err) { throw _err; }
 
-				Log.info(`Queue :: #${_id} Removed Processed Job`);
+				Log.info(`Queue :: #${id} Removed Processed Job`);
 			});
 		});
 	}
 
-	private process (_jobName: string, _count: number, _callback: Function): void {
-		this.jobs.process(_jobName, _count, (_job, _done) => {
-			_done(); // Notifies KUE about the completion of the job!
+	private process (jobName: string, count: number, callback: Function): void {
+		this.jobs.process(jobName, count, (job, done) => {
+			done(); // Notifies KUE about the completion of the job!
 
-			_callback(_job.data);
+			callback(job.data);
 		});
 	}
 }

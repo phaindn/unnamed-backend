@@ -19,8 +19,6 @@ export class Database {
 			console.log(error);
 			throw error;
 		});
-
-
 	}
 }
 
